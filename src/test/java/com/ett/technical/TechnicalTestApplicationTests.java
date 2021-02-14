@@ -11,6 +11,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
@@ -31,15 +32,17 @@ public class TechnicalTestApplicationTests
 {
     @LocalServerPort
     int randomServerPort;
-     
+    @Value("${server.port}")
+    private String serverPort;
+    final String baseUrl = "http://localhost:";
      
     @SuppressWarnings("deprecation")
 	@Test
     public void testAddUserMissingHeader() throws URISyntaxException 
     {
         RestTemplate restTemplate = new RestTemplate();
-        final String baseUrl = "http://localhost:8080"+"/api/user/create";
-        URI uri = new URI(baseUrl);
+        final String url = baseUrl+serverPort+"/api/user/create";
+        URI uri = new URI(url);
         Set<Account> acc = new HashSet<Account>();
         User user = new User("mastouri", "Adam", "sfax", "123564",acc);
          
@@ -67,8 +70,8 @@ public class TechnicalTestApplicationTests
      {
          RestTemplate restTemplate = new RestTemplate();
           
-         final String baseUrl = "http://localhost:8080"  + "/api/user/";
-         URI uri = new URI(baseUrl);
+         final String url = baseUrl+serverPort + "/api/user/";
+         URI uri = new URI(url);
       
          ResponseEntity<List> result = restTemplate.getForEntity(uri, List.class);
          assertEquals(200, result.getStatusCodeValue());
@@ -78,8 +81,8 @@ public class TechnicalTestApplicationTests
     public void testAddAccountMissingHeader() throws URISyntaxException 
     {
         RestTemplate restTemplate = new RestTemplate();
-        final String baseUrl = "http://localhost:8080"+"/api/account/create";
-        URI uri = new URI(baseUrl);
+        final String url = baseUrl+serverPort+"/api/account/create";
+        URI uri = new URI(url);
         LocalDate creationDate = LocalDate.now();
         Account acc = new Account(creationDate,0,0);
          
@@ -106,8 +109,8 @@ public class TechnicalTestApplicationTests
        {
            RestTemplate restTemplate = new RestTemplate();
             
-           final String baseUrl = "http://localhost:8080"  + "/api/account/";
-           URI uri = new URI(baseUrl);
+           final String url = baseUrl +serverPort + "/api/account/";
+           URI uri = new URI(url);
         
            ResponseEntity<String> result = restTemplate.getForEntity(uri, String.class);
 
